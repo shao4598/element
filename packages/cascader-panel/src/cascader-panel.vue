@@ -27,6 +27,7 @@ import {
   isEmpty,
   valueEquals
 } from 'element-ui/src/utils/util';
+import emitter from 'element-ui/src/mixins/emitter';
 
 const { keys: KeyCode } = AriaUtils;
 const DefaultProps = {
@@ -86,6 +87,8 @@ export default {
     CascaderMenu
   },
 
+  mixins: [emitter],
+  
   props: {
     value: {},
     options: Array,
@@ -150,6 +153,8 @@ export default {
     checkedValue(val) {
       if (!isEqual(val, this.value)) {
         this.checkStrictly && this.calculateCheckedNodePaths();
+        // 此处触发        
+        this.broadcast('ElCascaderMenu', 'updateInDeterminate');  
         this.$emit('input', val);
         this.$emit('change', val);
       }

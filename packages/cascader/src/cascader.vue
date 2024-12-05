@@ -617,12 +617,21 @@ export default {
         this.toggleDropDownVisible(false);
       }
     },
-    deleteTag(tag) {
-      const { checkedValue } = this;
-      const current = tag.node.getValueByOption();
-      const val = checkedValue.find(n => isEqual(n, current));
-      this.checkedValue = checkedValue.filter(n => !isEqual(n, current));
-      this.$emit('remove-tag', val);
+    deleteTag(tag) {      
+      // 此处添加panel
+      const { checkedValue, panel } = this;      
+      const current = tag.node.getValueByOption();      
+      const val = checkedValue.find(n => isEqual(n, current));      
+      this.checkedValue = checkedValue.filter(n => !isEqual(n, current));      
+      // 如果全选功能开启了，那么删除tag时，就得触发updateInDeterminate函数      
+      if (this.config.checkAll) {        
+          this.$nextTick(() => {          
+              panel.$refs.menu.forEach((menu) => {            
+                  menu.updateInDeterminate();          
+              });       
+          });      
+      }      
+      this.$emit('remove-tag', val);   
     },
     updateStyle() {
       const { $el, inputInitialHeight } = this;
